@@ -20,3 +20,11 @@ timetiger <- tiger$circ
 
 densityPlot(timetiger)
 densityPlot(tiger$circ)
+
+# Exercise: Create a kernel density plot for the species called macaque
+macaque <- kerinci[kerinci$Sps=="macaque",]
+macaque
+timemacaque <- macaque$circ
+densityPlot(timemacaque)
+
+overlapPlot(timetiger, timemacaque)
