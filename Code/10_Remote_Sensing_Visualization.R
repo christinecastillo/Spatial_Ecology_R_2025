@@ -3,6 +3,71 @@
 # Zenodo set: https://zenodo.org/records/15645465
 # install.packages("imageRy")
 library(imageRy)
+library(terra)
+library(viridis)
 
 im.list() # Muestra todos los archivos que hay dentro  #Zenodo es una open source 
 
+# Sentinel-2 bands
+# https://gisgeography.com/sentinel-2-bands-combinations/
+
+# importing the first band
+b2 <- im.import("sentinel.dolomites.b2.tif")
+
+plot(b2)
+plot(b2, col=magma(100))   
+
+# Import green band b3
+b3 <- im.import("sentinel.dolomites.b3.tif")
+
+plot(b3)
+
+cl <- colorRampPalette(c("black", "grey", "white")) (100)
+plot(b3, col=cl) # All black is absorving the green lenght
+
+# Multiframe
+par(mfrow=c(1,2))
+# or
+im.multiframe(1,2)
+plot(b2, col=cl)
+plot(b3, col=cl)
+
+#' @export
+im.multiframe <- function(x,y){
+  par(mfrow=c(x,y))
+  }   # Para usar la función que no funciona ahora fuimos a github y la buscamos
+
+dev.off() # Borrar todo
+plot(b2,b3)  # To see corelación
+
+# Import band number 4
+b4 <- im.import("sentinel.dolomites.b4.tif")
+plot(b4, col=cl)
+
+# Import band number 8
+b8 <- im.import("sentinel.dolomites.b8.tif")
+plot(b8, col=cl)
+
+im.multiframe(1,2)
+plot(b4)
+plot(b8)
+
+# built your own function for plotting
+duccio <- function(x,y){
+  par(mfrow=c(x,y))
+}
+
+# Exercise: with the funtion Ducccio, build a multiframe of 2 rows and 2 columns and plot alll the imported data
+duccio(2,2)
+plot(b2)
+plot(b3)
+plot(b4)
+plot(b8)
+
+# Exercise: create a multiframe with 1 and 2 columns , plot one agains the other
+# b2 b3
+# b4 b8
+
+duccio(1,2)
+plot(b2,b3)
+plot(b4,b8)
