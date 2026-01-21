@@ -1,0 +1,76 @@
+# Proyect for Spatial Ecology in R
+# Cambio de vegetación en un área de la Amazonía en Madre de Dios, Perú
+# Descarga de la Data que se hizo desde GEE
+# Sentinel 2 
+# Selección del área creando un polígono en GEE, lo hice manualmente pero me dio este código en Java
+# Definition of the Area of Interest (AOI)
+
+var aoi = 
+    /* color: #d63000 */
+    /* displayProperties: [
+      {
+        "type": "rectangle"
+      }
+    ] */
+    ee.Geometry.Polygon(
+        [[[-69.45733602921716, -12.618653955924866],
+          [-69.45733602921716, -12.788122771290626],
+          [-69.25117071549646, -12.788122771290626],
+          [-69.25117071549646, -12.618653955924866]]], null, false);
+
+# Septiembre del 2025
+# Descarga y selección de las imágenes adecuadas usando los filtros y un 20% de nubes
+
+var collection = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+                   .filterBounds(aoi)
+                   .filterDate('2020-09-01','2020-09-30')
+                   .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+                   .median()
+                   .clip(aoi);
+                  
+print(collection);
+
+Map.addLayer(collection,{bands:['B4','B3','B2'], min: 0, max: 3000})
+
+# Descarga de la imagen a Drive
+
+Export.image.toDrive({
+  image:collection.select(['B4','B3','B2']),
+  description: 'sentinal2_median_09_2020',
+  region: aoi,
+  scale: 10  ,
+  maxPixels: 1e13
+});
+
+# Adjuntar imagen descargada
+
+# Septiembre del 2020
+# Descarga y selección de las imágenes adecuadas usando los filtros y un 20% de nubes
+
+var collection = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+                   .filterBounds(aoi)
+                   .filterDate('2020-09-01','2020-09-30')
+                   .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+                   .median()
+                   .clip(aoi);
+                  
+print(collection);
+
+Map.addLayer(collection,{bands:['B4','B3','B2'], min: 0, max: 3000})
+
+# Descarga de la imagen a Drive
+
+Export.image.toDrive({
+  image:collection.select(['B4','B3','B2']),
+  description: 'sentinal2_median_09_2020',
+  region: aoi,
+  scale: 10  ,
+  maxPixels: 1e13
+});
+
+# Adjuntar imagen descargada
+
+------------------------------------------------------------------------------------------------------------------
+
+# Comenzar analisis en R
+
