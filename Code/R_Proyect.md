@@ -468,3 +468,7 @@ grid.arrange(p2019, p2024, ncol = 2)
 
 *Figure 9: Multitemporal comparison of unsupervised land cover classification for the Madre de Dios region, Peru, using Sentinel-2 imagery from July 2019 and July 2024. Four classes were identified (water, bare soil, moderate vegetation, and healthy vegetation) based on Red and Near-Infrared spectral responses.*
 
+### References
+
+- R Core Team. (2024). R: A language and environment for statistical computing. R Foundation for Statistical Computing. https://www.R-project.org/
+- Google Earth Engine Team. (2023). Google Earth Engine: Planetary-scale geospatial analysis for everyone. https://earthengine.google.com/
