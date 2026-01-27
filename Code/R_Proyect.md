@@ -209,7 +209,7 @@ plot(RGB_NIR_2024, col = plasma(100))
 
 ![Rplot_2024](https://github.com/user-attachments/assets/a11c296c-d6be-42db-9cf1-db77a1c6fc32)
 
-*Figure 2: Sentinel-2 raster bands for July 2024 over the Madre de Dios region, Perú. The image shows four bands: B2 (blue), B3 (green), B4 (red), and B8 (near-infrared, NIR). The color scale used is the "plasma" palette from the R package viridis.*
+*Figure 3: Sentinel-2 raster bands for July 2024 over the Madre de Dios region, Perú. The image shows four bands: B2 (blue), B3 (green), B4 (red), and B8 (near-infrared, NIR). The color scale used is the "plasma" palette from the R package viridis.*
 
 ### Visualization of RGB Images for 2019, 2022, and 2024
 
@@ -227,7 +227,7 @@ plotRGB(RGB_NIR_2024, r = 1, g = 2, b = 3, stretch = "lin", main = "RGB 2024")
 
 ![RGBplot_2019_2022_2024](https://github.com/user-attachments/assets/5764d982-7081-4e04-811b-bb442f924a4c)
 
-*Figure 3: RGB composites of the Madre de Dios region for July 2019, 2022, and 2024, showing changes in vegetation cover over the dry season.*
+*Figure 4: RGB composites of the Madre de Dios region for July 2019, 2022, and 2024, showing changes in vegetation cover over the dry season.*
 
 ### Visualization of Vegetation Using NIR (Near-Infrared) Band
 
@@ -249,7 +249,7 @@ plotRGB(RGB_NIR_2024, r = 1, g = 2, b = 4, stretch = "lin", main = "Madre de Dio
 
 ![Rplot_NIR](https://github.com/user-attachments/assets/e94fbec6-a0a6-450e-bd1d-2d7d8cde7488)
 
-*Figure: Comparison of RGB composites with NIR (Band B8) replacing Blue for the Madre de Dios region in July 2019 and 2024. Vegetation appears blue, highlighting areas of healthy growth, while non-vegetation areas appear yellow, allowing a clear visualization of vegetation changes over time.*
+*Figure 5: Comparison of RGB composites with NIR (Band B8) replacing Blue for the Madre de Dios region in July 2019 and 2024. Vegetation appears blue, highlighting areas of healthy growth, while non-vegetation areas appear yellow, allowing a clear visualization of vegetation changes over time.*
 
 **A noticeable decrease in blue intensity over the years indicates a reduction in healthy vegetation cover, suggesting potential vegetation loss or stress in certain areas.**
 
@@ -274,24 +274,38 @@ Where:
 
 ---
 
-## Calculation in R
+## DVI Calculation
 
-```r
-library(raster)
+The DVI was computed separately for the Sentinel-2 images of July 2019 and July 2024 using Band B8 (NIR) and Band B4 (Red):
 
-# Assuming the raster has NIR and Red bands
-nir <- campoimp19[[4]]  # B8
-red <- campoimp19[[3]]  # B4
+```
+dvi_2019 <- RGB_NIR_2019[["B8 (NIR)"]] - RGB_NIR_2019[["B4 (Red)"]]
+dvi_2024 <- RGB_NIR_2024[["B8 (NIR)"]] - RGB_NIR_2024[["B4 (Red)"]]
+```
 
-# Calculate DVI
-dvi <- nir - red
+## DVI Difference Between Years (ΔDVI)
 
-# Plot DVI with coordinates and color scale
-plot(dvi,
-     main = "Campo Imperatore - DVI 2019",
-     xlab = "Longitude",
-     ylab = "Latitude",
-     col = viridis::viridis(100))
+To assess vegetation change over time, the difference between the two DVI layers was calculated:
+
+```
+ddvi <- dvi_2019 - dvi_2024
+```
+
+The DVI maps for both years and their difference were visualized side by side using the inferno color scale, which enhances contrast and spatial patterns:
+
+```
+par(mfrow = c(1, 3))
+
+plot(dvi_2019, main = "DVI 2019", col = inferno(100))
+plot(dvi_2024, main = "DVI 2024", col = inferno(100))
+plot(ddvi, main = "ΔDVI (2019 - 2024)", col = inferno(100))
+```
+
+![Rplot_DVI](https://github.com/user-attachments/assets/e39f23c2-9e9f-4604-9e2a-4e50dd4d7926)
+
+*Figure 6: Difference Vegetation Index (DVI) maps for July 2019 and July 2024, and their difference (ΔDVI = DVI(2019) − DVI(2024)) for the Madre de Dios region, Peru.*
+
+**The DVI maps show a general decrease in vegetation vigor from 2019 to 2024. Higher DVI values, associated with healthy vegetation, are more widespread in 2019, while the ΔDVI map (2019 − 2024) highlights predominantly positive values, indicating a reduction in vegetation cover or health over time in several areas of the study region.**
 
 
 
