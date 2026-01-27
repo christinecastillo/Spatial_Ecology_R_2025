@@ -13,17 +13,50 @@ var aoi =
       }
     ] */
     ee.Geometry.Polygon(
-        [[[-69.45733602921716, -12.618653955924866],
-          [-69.45733602921716, -12.788122771290626],
-          [-69.25117071549646, -12.788122771290626],
-          [-69.25117071549646, -12.618653955924866]]], null, false);
+        [[[-69.63174398820153, -12.467175749655912],
+          [-69.63174398820153, -12.889883444720278],
+          [-69.03144415299646, -12.889883444720278],
+          [-69.03144415299646, -12.467175749655912]]], null, false);
 
-# Septiembre del 2025
+# Julio del 2019
 # Descarga y selección de las imágenes adecuadas usando los filtros y un 20% de nubes
 
 var collection = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
                    .filterBounds(aoi)
-                   .filterDate('2020-09-01','2020-09-30')
+                   .filterDate('2019-07-01','2019-07-31')
+                   .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+                   .median()
+                   .clip(aoi);
+                   
+ print(collection);
+
+Map.addLayer(collection,{bands:['B4','B3','B2'], min: 0, max: 3000})
+
+# Área del polígono (AOI)
+
+var area_km2 = aoi.area(1).divide(1e6);
+print('Área del polígono (km²):', area_km2);
+
+# Área del polígono (km²): 3060.9600868077127
+
+# Descarga de la imagen a Drive
+
+Export.image.toDrive({
+  image:collection.select(['B4','B3','B2']),
+  description: 'sentinel2_median_07_2019',
+  region: aoi,
+  scale: 10  ,
+  maxPixels: 1e13
+});
+
+# Adjuntar imagen descargada
+
+# Julio del 2022
+# Descarga y selección de las imágenes adecuadas usando los filtros y un 20% de nubes
+
+var collection = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+                   .filterBounds(aoi)
+                   .filterDate('2022-07-01','2022-07-31')
                    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
                    .median()
                    .clip(aoi);
@@ -36,7 +69,7 @@ Map.addLayer(collection,{bands:['B4','B3','B2'], min: 0, max: 3000})
 
 Export.image.toDrive({
   image:collection.select(['B4','B3','B2']),
-  description: 'sentinal2_median_09_2020',
+  description: 'sentinel2_median_07_2022',
   region: aoi,
   scale: 10  ,
   maxPixels: 1e13
@@ -44,12 +77,13 @@ Export.image.toDrive({
 
 # Adjuntar imagen descargada
 
-# Septiembre del 2020
+# Julio del 2024
+
 # Descarga y selección de las imágenes adecuadas usando los filtros y un 20% de nubes
 
 var collection = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
                    .filterBounds(aoi)
-                   .filterDate('2020-09-01','2020-09-30')
+                   .filterDate('2024-07-01','2024-07-31')
                    .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
                    .median()
                    .clip(aoi);
@@ -62,15 +96,41 @@ Map.addLayer(collection,{bands:['B4','B3','B2'], min: 0, max: 3000})
 
 Export.image.toDrive({
   image:collection.select(['B4','B3','B2']),
-  description: 'sentinal2_median_09_2020',
+  description: 'sentinel2_median_07_2024',
   region: aoi,
   scale: 10  ,
   maxPixels: 1e13
 });
 
 # Adjuntar imagen descargada
+
 
 ------------------------------------------------------------------------------------------------------------------
 
 # Comenzar analisis en R
+
+# Definir working directory donde tenemos las imagenes para cargarlas a R
+
+setwd("C://Users/chris/Desktop/Proyect R/")
+
+library(terra)      # Raster data handling
+library(imageRy)    # Image manipulation utilities
+library(viridis)    # Provides color-blind–safe color palettes
+library(ggplot2)    # Data visualization and plotting
+
+# Importing images from Sentinel 2 
+
+RGB_NIR_2022 <- rast("sentinel2_median_07_2019.tif")
+RGB_NIR_2022 <- rast("sentinel2_median_07_2022.tif")
+RGB_NIR_2024 <- rast("sentinel2_median_07_2024.tif")
+
+# Visualize the bands B2, B3, B4, B8
+
+plot(RGB_NIR_2019, col = plasma(100))
+plot(RGB_NIR_2022, col = plasma(100))
+plot(RGB_NIR_2024, col = plasma(100))
+
+
+
+
 
