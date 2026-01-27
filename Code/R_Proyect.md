@@ -6,11 +6,7 @@ Matricola: 0001217398
 Date: "28-01-2026"
 ---
 
-# Spatial Ecology Project in R
-
-## Vegetation Change in Madre de Dios, Peru
-
-This project aims to analyze vegetation changes in a region of the Peruvian Amazon (Madre de Dios) using Sentinel-2 satellite images downloaded from Google Earth Engine (GEE) and processed later in R.
+# Multitemporal Analysis of Vegetation Change in Madre de Dios, Perú (2019 - 2024) Using Sentinel-2 Imagery
 
 ---
 
