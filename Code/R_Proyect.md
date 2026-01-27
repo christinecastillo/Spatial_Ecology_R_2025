@@ -1,6 +1,6 @@
 ---
 
-Title: "Spatial Distribution"
+Title: "Multitemporal Analysis of Vegetation Change in Madre de Dios, Perú (2019 - 2024) Using Sentinel-2 Imagery"
 Author: "Christine Nicole Castillo Rivera"
 Matricola: 0001217398
 Date: "28-01-2026"
@@ -16,30 +16,30 @@ This project aims to analyze vegetation changes in a region of the Peruvian Amaz
 
 ## Introduction
 
-The Peruvian Amazon is a biodiversity hotspot that has experienced significant changes in vegetation cover over recent years. Analyzing these changes with satellite imagery allows quantifying and visualizing spatial variations in vegetation, contributing to research in spatial ecology and conservation.
+The Peruvian Amazon is a biodiversity hotspot that has experienced significant changes in vegetation cover over recent years. Monitoring these changes with satellite imagery provides a powerful way to quantify and visualize spatial variations in vegetation, supporting research in spatial ecology and conservation. For this study, images from July were selected because the dry season reduces cloud cover, allowing clearer observation of vegetation patterns. Vegetation dynamics were analyzed using the Difference Vegetation Index (DVI) and the Normalized Difference Vegetation Index (NDVI), complemented by unsupervised land cover classification. This approach enables a detailed assessment of vegetation health and land cover changes over time, offering valuable insights into ecosystem dynamics in the Madre de Dios region.
+  
+------ 
 
----
+## Materials - 
 
-## Materials
+**Software**: 
+- Google Earth Engine (GEE) for downloading and preprocessing satellite images.
+- R (with terra, imageRy, viridis, and ggplot2 packages) for image analysis and visualization. - 
 
-- **Software**:  
-  - Google Earth Engine (GEE) for downloading and preprocessing satellite images.  
-  - R (with `terra`, `imageRy`, `viridis`, and `ggplot2` packages) for image analysis and visualization.  
+**Data**: 
+- Sentinel-2 images for July 2019, 2022, and 2024.
+   Area of Interest (AOI) defined manually as a polygon in GEE. - 
 
-- **Data**:  
-  - Sentinel-2 images for July 2019, 2022, and 2024.  
-  - Area of Interest (AOI) defined manually as a polygon in GEE.
+**Hardware**: 
 
-- **Hardware**:  
-  - Computer capable of handling high-resolution raster images.
-    
+- Computer capable of handling high-resolution raster images.
 ---
 
 ## Methods
 
 ### 1. Defining the Area of Interest (AOI) in GEE
 
-A polygon was manually created in Google Earth Engine to delimit the study area:
+The study was conducted in the Madre de Dios region, Peru. The area of interest (AOI) was manually defined as a polygon in Google Earth Engine (GEE), covering approximately 3,060.96 km².
 
 ```
 var aoi = ee.Geometry.Polygon(
@@ -68,8 +68,7 @@ For each study year (2019, 2022, 2024), the following steps were performed:
 - Images were exported to Google Drive for later download.
 
 ### Sentinel 2 image for July 2019:
-
-To analyze vegetation during the dry season in Peru, we selected images from **July**, when cloud cover is generally lower and vegetation patterns are more clearly visible. 
+ 
 ```
 var collection = ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
                    .filterBounds(aoi)
@@ -152,9 +151,9 @@ Export.image.toDrive({
 });
 ```
 
-### 2. Analysis in R
+### 3. Analysis in R
 
-Setting up the workspace
+## Setting up the workspace
 
 Define the working directory where downloaded images are stored:
 
@@ -162,16 +161,17 @@ Define the working directory where downloaded images are stored:
 setwd("C://Users/chris/Desktop/Proyect R/")
 ```
 
-Load required packages
+## Load required packages
 
 ```
 library(terra)      # Raster data handling
 library(imageRy)    # Image manipulation utilities
 library(viridis)    # Color-blind–friendly color palettes
 library(ggplot2)    # Data visualization
+library(gridExtra)  # To arrange plots side by side
 ```
 
-Import Sentinel-2 raster images
+## Import Sentinel-2 raster images
 
 ```
 RGB_NIR_2019 <- rast("sentinel2_median_07_2019.tif")
@@ -179,7 +179,7 @@ RGB_NIR_2022 <- rast("sentinel2_median_07_2022.tif")
 RGB_NIR_2024 <- rast("sentinel2_median_07_2024.tif")
 ```
 
-Visualize and name the bands B2, B3, B4, B8
+## Visualize and name the bands B2, B3, B4, B8
 
 ```
 names(RGB_NIR_2019) <- c("B2 (Blue)", "B3 (Green)", "B4 (Red)", "B8 (NIR)")
@@ -255,8 +255,7 @@ plotRGB(RGB_NIR_2024, r = 1, g = 2, b = 4, stretch = "lin", main = "Madre de Dio
 
 # DVI Analysis (Difference Vegetation Index)
 
-## Definition
-The **Difference Vegetation Index (DVI)** is a vegetation index used to highlight the presence and density of vegetation in an area.  
+The Difference Vegetation Index (DVI) is a vegetation index used to highlight the presence and density of vegetation in an area.  
 It is calculated as the difference between the near-infrared (NIR) band and the red band:
 
 $` DVI = NIR - Red `$   
@@ -267,7 +266,6 @@ Where:
 
 ---
 
-## Interpretation
 - **High positive values** indicate areas with healthy, dense vegetation.  
 - **Values near zero** indicate bare soil, rocks, or areas with little vegetation.  
 - **Negative values** are rare and may indicate water or data anomalies.  
@@ -291,8 +289,6 @@ To assess vegetation change over time, the difference between the two DVI layers
 ddvi <- dvi_2019 - dvi_2024
 ```
 
-The DVI maps for both years and their difference were visualized side by side using the inferno color scale, which enhances contrast and spatial patterns:
-
 ```
 par(mfrow = c(1, 3))
 
@@ -307,5 +303,172 @@ plot(ddvi, main = "ΔDVI (2019 - 2024)", col = inferno(100))
 
 **The DVI maps show a general decrease in vegetation vigor from 2019 to 2024. Higher DVI values, associated with healthy vegetation, are more widespread in 2019, while the ΔDVI map (2019 − 2024) highlights predominantly positive values, indicating a reduction in vegetation cover or health over time in several areas of the study region.**
 
+# Normalized Difference Vegetation Index (NDVI) Analysis
 
+To further assess vegetation health and compare changes between 2019 and 2024, the Normalized Difference Vegetation Index (NDVI) was calculated. NDVI is a widely used vegetation index that normalizes the Difference Vegetation Index (DVI) by the sum of the Near-Infrared (NIR) and Red bands, allowing for better comparison across time and space.
+
+The NDVI is defined as:
+
+$` NDVI = \frac{(NIR - Red)}{(NIR + Red)} `$ 
+
+## NDVI Calculation
+
+Using the previously computed DVI layers, NDVI was calculated for each year:
+
+```
+ndvi2019 <- dvi_2019 / (RGB_NIR_2019[[1]] + RGB_NIR_2019[[2]])
+ndvi2024 <- dvi_2024 / (RGB_NIR_2024[[1]] + RGB_NIR_2024[[2]])
+```
+
+## NDVI Difference Between Years (ΔNDVI)
+
+To evaluate temporal changes in vegetation health, the difference between NDVI values was computed:
+
+```
+dndvi <- ndvi2019 - ndvi2024
+```
+
+Positive ΔNDVI values indicate areas where vegetation health was higher in 2019 compared to 2024, while negative values suggest stable or improved vegetation conditions over time.
+
+## Visualization of NDVI and ΔNDVI
+
+The NDVI maps and their difference were visualized side by side to facilitate comparison. The magma and inferno color scales were used to enhance contrast and highlight spatial patterns:
+
+```
+par(mfrow = c(1, 3))
+
+plot(ndvi2019, main = "NDVI 2019", col = magma(100))
+plot(ndvi2024, main = "NDVI 2024", col = magma(100))
+plot(dndvi, main = "ΔNDVI (2019 − 2024)", col = inferno(100))
+```
+
+![Rplot_NDVI](https://github.com/user-attachments/assets/4764584a-7a61-4a57-8c6e-c4317fc7f548)
+
+
+*Figure 7: Normalized Difference Vegetation Index (NDVI) maps for July 2019 and July 2024, and their difference (ΔNDVI = NDVI(2019) − NDVI(2024)) for the Madre de Dios region, Peru.*
+
+
+Higher NDVI values indicate dense and healthy vegetation, while lower values correspond to sparse or stressed vegetation. The ΔNDVI map highlights spatial variations in vegetation dynamics, revealing areas where vegetation health has declined or remained stable between 2019 and 2024.​
+
+### Multitemporal Analysis
+
+The multitemporal analysis allowed the comparison of Sentinel-2 satellite data from 2019 and 2024, focusing on the Near-Infrared (NIR) band and the Normalized Difference Vegetation Index (NDVI). This approach was used to highlight significant changes in vegetation condition over the analyzed period.
+
+By comparing these indicators across time, it is possible to identify areas affected by vegetation loss, degradation, or stress.
+
+## NIR and NDVI Differences
+
+The temporal differences were calculated by subtracting the 2019 values from the 2024 values:
+
+```
+nir_diff  <- RGB_NIR_2024[["B8 (NIR)"]] - RGB_NIR_2019[["B8 (NIR)"]]
+ndvi_diff <- ndvi2024 - ndvi2019
+```
+
+## Visualization of Multitemporal Changes
+
+The spatial distribution of vegetation changes was visualized using side-by-side maps. The viridis color scale was applied to enhance readability and ensure perceptual uniformity:
+
+```
+par(mfrow = c(1, 2))
+
+plot(nir_diff, col = viridis(100), main = "NIR Difference (2024 − 2019)")
+plot(ndvi_diff, col = viridis(100), main = "NDVI Difference (2024 − 2019)")
+```
+
+![Rplot_NIR_NDVI](https://github.com/user-attachments/assets/ecca5a1e-d141-4b89-bdce-6bbb3b00bd7c)
+
+*Figure 8: Multitemporal comparison of Near-Infrared (NIR) reflectance and Normalized Difference Vegetation Index (NDVI) for the Madre de Dios region, Peru, between July 2019 and July 2024.*
+
+- Positive values indicate areas where NIR reflectance or NDVI increased, suggesting stable or improved vegetation conditions.
+- Negative values highlight zones with reduced vegetation vigor, potentially associated with vegetation degradation or land-use change.
+
+### Multitemporal Land Cover Classification (2019–2024)
+
+An unsupervised classification was applied to Sentinel-2 imagery from July 2019 and July 2024 to assess land cover changes in the Madre de Dios region, Peru. The analysis focused on the Red (B4) and Near-Infrared (B8) bands, which are effective for distinguishing vegetation, water bodies, and bare soil.
+
+Four land cover classes were identified based on spectral response and visual interpretation:
+
+- Water
+- Bare soil
+- Moderate vegetation
+- Healthy vegetation
+
+ ## Selection of spectral bands:
+ 
+```
+s2_2019 <- RGB_NIR_2019[[c("B4 (Red)", "B8 (NIR)")]]
+s2_2024 <- RGB_NIR_2024[[c("B4 (Red)", "B8 (NIR)")]]
+```
+
+## Unsupervised Classification
+
+```
+class_2019 <- im.classify(s2_2019, num_clusters = 4)
+class_2024 <- im.classify(s2_2024, num_clusters = 4)
+
+par(mfrow = c(1, 2))
+plot(class_2019, col = viridis(4), main = "Land Cover Classification 2019")
+plot(class_2024, col = viridis(4), main = "Land Cover Classification 2024")
+```
+
+![Rplot_LandCover](https://github.com/user-attachments/assets/d9c37978-59cf-4422-a48f-adea5058bbe1)
+
+*Figure 9: Unsupervised land cover classification for the Madre de Dios region, Peru, using Sentinel-2 imagery from July 2019 and July 2024. Four classes were identified (water, bare soil, moderate vegetation, and healthy vegetation) based on Red and Near-Infrared spectral responses.*
+
+## Land Cover Proportions
+
+```
+freq_2019 <- freq(class_2019)
+freq_2024 <- freq(class_2024)
+
+perc_2019 <- freq_2019$count * 100 / ncell(class_2019)
+perc_2024 <- freq_2024$count * 100 / ncell(class_2024)
+```
+
+## Summary Table
+
+```
+class_names <- c("Water", "Bare soil", "Moderate vegetation", "Healthy vegetation")
+
+tab_lc <- data.frame(
+  Class = class_names,
+  Perc_2019 = perc_2019,
+  Perc_2024 = perc_2024
+)
+
+tab_lc
+```
+
+| Class               | Perc_2019  | Perc_2024  |
+|--------------------|------------|------------|
+| Water               | 4.814144   | 42.956808  |
+| Bare soil           | 32.879885  | 17.009621  |
+| Moderate vegetation | 18.728355  | 34.252317  |
+| Healthy vegetation  | 43.556371  | 5.760008   |
+
+
+## Visualization of Changes
+
+```
+p2019 <- ggplot(tab_lc, aes(x = Class, y = Perc_2019, fill = Class)) +
+  geom_bar(stat = "identity") +
+  ylim(0, 100) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(title = "Land Cover Distribution – 2019", y = "Percentage (%)")
+
+p2024 <- ggplot(tab_lc, aes(x = Class, y = Perc_2024, fill = Class)) +
+  geom_bar(stat = "identity") +
+  ylim(0, 100) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(title = "Land Cover Distribution – 2024", y = "Percentage (%)")
+
+grid.arrange(p2019, p2024, ncol = 2)
+```
+
+![Rplot_LandCover_2019_2024](https://github.com/user-attachments/assets/b1ec55f6-3ac6-40f8-b5a8-9a46e8f5cf16)
+
+*Figure 9: Multitemporal comparison of unsupervised land cover classification for the Madre de Dios region, Peru, using Sentinel-2 imagery from July 2019 and July 2024. Four classes were identified (water, bare soil, moderate vegetation, and healthy vegetation) based on Red and Near-Infrared spectral responses.*
 
