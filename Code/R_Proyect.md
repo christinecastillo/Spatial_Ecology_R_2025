@@ -19,7 +19,7 @@ The Peruvian Amazon is a biodiversity hotspot that has experienced significant c
 ## Materials - 
 
 **Software**: 
-- Google Earth Engine (GEE) for downloading and preprocessing satellite images.
+- Google Earth Engine (GEE) for downloading satellite images.
 - R (with terra, imageRy, viridis, and ggplot2 packages) for image analysis and visualization. - 
 
 **Data**: 
