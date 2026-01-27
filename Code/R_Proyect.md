@@ -23,8 +23,7 @@ The Peruvian Amazon is a biodiversity hotspot that has experienced significant c
 - R (with terra, imageRy, viridis, and ggplot2 packages) for image analysis and visualization. - 
 
 **Data**: 
-- Sentinel-2 images for July 2019, 2022, and 2024.
-   Area of Interest (AOI) defined manually as a polygon in GEE. - 
+- Sentinel-2 images for July 2019, 2022, and 2024. 
 
 **Hardware**: 
 
@@ -56,13 +55,6 @@ Result: 3060.96 km².
 
 ### 2. Downloading and Selecting Sentinel-2 Images
 
-For each study year (2019, 2022, 2024), the following steps were performed:
-
-- Images were filtered by date and cloud percentage (<20%).
-- The median of the filtered collection was calculated.
-- Images were clipped to the AOI polygon.
-- Images were exported to Google Drive for later download.
-
 ### Sentinel 2 image for July 2019:
  
 ```
@@ -78,12 +70,12 @@ print(collection);
 Map.addLayer(collection,{bands:['B4','B3','B2'], min: 0, max: 3000})
 ```
 
-We selected the bands B4 (red), B3 (green), B2 (blue), and B8 (near-infrared).
+The bands B4 (red), B3 (green), B2 (blue), and B8 (near-infrared) were selected.
 
 - B2, B3, B4 allow visualization of the landscape in true color.
-- B8 (NIR) is highly sensitive to vegetation and is used to calculate indices like NDVI, which highlight plant health and biomass.
+- B8 (NIR) is highly sensitive to vegetation and is used to calculate indices. 
 
-Finally, the image was exported to Google Drive for further analysis in R:
+Exported to Google Drive for further analysis in R:
 
 ```
 Export.image.toDrive({
@@ -95,7 +87,7 @@ Export.image.toDrive({
 });
 ```
 
-This process was repeated for 2022 and 2024, generating three median images per year.
+This process was repeated for 2022 and 2024.
 
 ### Sentinel 2 image for July 2022:
 
