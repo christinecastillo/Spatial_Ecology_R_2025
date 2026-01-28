@@ -18,16 +18,9 @@ The Peruvian Amazon is a biodiversity hotspot that has experienced significant c
 
 ## Materials
 
-**Software**: 
 - Google Earth Engine (GEE) for downloading satellite images.
-- R (with terra, imageRy, viridis, and ggplot2 packages) for image analysis and visualization. - 
-
-**Data**: 
+- R (with terra, imageRy, viridis, and ggplot2 packages) for image analysis and visualization. 
 - Sentinel-2 images for July 2019, 2022, and 2024. 
-
-**Hardware**: 
-
-- Computer capable of handling high-resolution raster images.
 ---
 
 ## Methods
@@ -222,8 +215,6 @@ plotRGB(RGB_NIR_2024, r = 1, g = 2, b = 3, stretch = "lin", main = "RGB 2024")
 The NIR (Near-Infrared) band is crucial because healthy vegetation strongly reflects NIR light, whereas stressed or sparse vegetation reflects less.  
 By substituting the Blue band with NIR in the RGB composite, vegetation areas become more visually distinct (blue), while non-vegetation areas appear in contrasting colors (yellow), allowing a clear assessment of vegetation cover and health.
 
-Arrange plots side by side
-
 ```
 par(mfrow = c(1, 3))
 ```
@@ -288,11 +279,9 @@ plot(ddvi, main = "ΔDVI (2019 - 2024)", col = inferno(100))
 
 *Figure 6: Difference Vegetation Index (DVI) maps for July 2019 and July 2024, and their difference (ΔDVI = DVI(2019) − DVI(2024)) for the Madre de Dios region, Peru.*
 
-**The DVI maps show a general decrease in vegetation vigor from 2019 to 2024. Higher DVI values, associated with healthy vegetation, are more widespread in 2019, while the ΔDVI map (2019 − 2024) highlights predominantly positive values, indicating a reduction in vegetation cover or health over time in several areas of the study region.**
-
 # Normalized Difference Vegetation Index (NDVI) Analysis
 
-To further assess vegetation health and compare changes between 2019 and 2024, the Normalized Difference Vegetation Index (NDVI) was calculated. NDVI is a widely used vegetation index that normalizes the Difference Vegetation Index (DVI) by the sum of the Near-Infrared (NIR) and Red bands, allowing for better comparison across time and space.
+To further assess vegetation health and compare changes between 2019 and 2024, the Normalized Difference Vegetation Index (NDVI) was calculated.
 
 The NDVI is defined as:
 
@@ -300,16 +289,12 @@ $` NDVI = \frac{(NIR - Red)}{(NIR + Red)} `$
 
 ## NDVI Calculation
 
-Using the previously computed DVI layers, NDVI was calculated for each year:
-
 ```
 ndvi2019 <- (RGB_NIR_2019[["B8 (NIR)"]] - RGB_NIR_2019[["B4 (Red)"]]) / (RGB_NIR_2019[["B8 (NIR)"]] + RGB_NIR_2019[["B4 (Red)"]])
 ndvi2024 <- (RGB_NIR_2024[["B8 (NIR)"]] - RGB_NIR_2024[["B4 (Red)"]]) / (RGB_NIR_2024[["B8 (NIR)"]] + RGB_NIR_2024[["B4 (Red)"]])
 ```
 
 ## NDVI Difference Between Years (ΔNDVI)
-
-To evaluate temporal changes in vegetation health, the difference between NDVI values was computed:
 
 ```
 dndvi <- ndvi2019 - ndvi2024
@@ -359,7 +344,7 @@ plot(ndvi_diff, col = viridis(100), main = "NDVI Difference (2024 − 2019)")
 
 ### Multitemporal Land Cover Classification (2019–2024)
 
-An unsupervised classification was applied to Sentinel-2 imagery from July 2019 and July 2024 to assess land cover changes in the Madre de Dios region, Peru. The analysis focused on the Red (B4) and Near-Infrared (B8) bands, which are effective for distinguishing vegetation, water bodies, and bare soil.
+An unsupervised classification was applied to Sentinel-2 imagery from July 2019 and July 2024 to assess land cover changes in the Madre de Dios region, Peru.
 
 Four land cover classes were identified based on spectral response and visual interpretation:
 
