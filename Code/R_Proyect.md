@@ -239,8 +239,6 @@ plotRGB(RGB_NIR_2024, r = 1, g = 2, b = 4, stretch = "lin", main = "Madre de Dio
 
 *Figure 5: Comparison of RGB composites with NIR (Band B8) replacing Blue for the Madre de Dios region in July 2019 and 2024. Vegetation appears blue, highlighting areas of healthy growth, while non-vegetation areas appear yellow, allowing a clear visualization of vegetation changes over time.*
 
-**A noticeable decrease in blue intensity over the years indicates a reduction in healthy vegetation cover, suggesting potential vegetation loss or stress in certain areas.**
-
 # DVI Analysis (Difference Vegetation Index)
 
 The Difference Vegetation Index (DVI) is a vegetation index used to highlight the presence and density of vegetation in an area.  
@@ -304,8 +302,8 @@ $` NDVI = \frac{(NIR - Red)}{(NIR + Red)} `$
 Using the previously computed DVI layers, NDVI was calculated for each year:
 
 ```
-ndvi2019 <- dvi_2019 / (RGB_NIR_2019[[1]] + RGB_NIR_2019[[2]])
-ndvi2024 <- dvi_2024 / (RGB_NIR_2024[[1]] + RGB_NIR_2024[[2]])
+ndvi2019 <- dvi_2019 / (RGB_NIR_2019[[4]] + RGB_NIR_2019[[8]])
+ndvi2024 <- dvi_2024 / (RGB_NIR_2024[[4]] + RGB_NIR_2024[[8]])
 ```
 
 ## NDVI Difference Between Years (ΔNDVI)
@@ -459,6 +457,12 @@ grid.arrange(p2019, p2024, ncol = 2)
 ![Rplot_LandCover_2019_2024](https://github.com/user-attachments/assets/b1ec55f6-3ac6-40f8-b5a8-9a46e8f5cf16)
 
 *Figure 9: Multitemporal comparison of unsupervised land cover classification for the Madre de Dios region, Peru, using Sentinel-2 imagery from July 2019 and July 2024. Four classes were identified (water, bare soil, moderate vegetation, and healthy vegetation) based on Red and Near-Infrared spectral responses.*
+
+### Conclusions
+
+- The analysis shows a clear reduction in healthy vegetation between 2019 and 2024 in several areas of the study region. Both DVI and NDVI maps indicate a decline in vegetation vigor, confirming patterns observed in RGB and NIR visualizations.
+- Using the Near-Infrared band allowed for a clear distinction between vegetation and non-vegetation areas, making it easier to assess vegetation health. Satellite imagery proved to be a reliable and efficient tool for monitoring spatial and temporal changes in vegetation cover.
+- Unsupervised classification revealed shifts in land cover over time, with reductions in healthy vegetation and increases in bare soil and moderate vegetation areas. These results highlight potential impacts of land use, environmental stress, or human activities in the region.
 
 ### References
 
