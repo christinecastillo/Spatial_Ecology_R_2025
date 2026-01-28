@@ -126,9 +126,109 @@ RGB_NIR_2024 <- rast("sentinel2_median_07_2024.tif")
 
 # Visualize the bands B2, B3, B4, B8
 
-plot(RGB_NIR_2019, col = plasma(100))
-plot(RGB_NIR_2022, col = plasma(100))
-plot(RGB_NIR_2024, col = plasma(100))
+names(RGB_NIR_2019) <- c("B2 (Blue)", "B3 (Green)", "B4 (Red)", "B8 (NIR)")
+names(RGB_NIR_2022) <- c("B2 (Blue)", "B3 (Green)", "B4 (Red)", "B8 (NIR)")
+names(RGB_NIR_2024) <- c("B2 (Blue)", "B3 (Green)", "B4 (Red)", "B8 (NIR)")
+
+#Visualization of RGB Images for 2019, 2022, and 2024
+
+par(mfrow = c(1, 3)) 
+
+plotRGB(RGB_NIR_2019, r = 1, g = 2, b = 3, stretch = "lin", main = "RGB 2019") 
+plotRGB(RGB_NIR_2022, r = 1, g = 2, b = 3, stretch = "lin", main = "RGB 2022") 
+plotRGB(RGB_NIR_2024, r = 1, g = 2, b = 3, stretch = "lin", main = "RGB 2024")
+
+#Visualization of Vegetation Using NIR (Near-Infrared) Band
+
+par(mfrow = c(1, 3))
+
+plotRGB(RGB_NIR_2019, r = 1, g = 2, b = 4, stretch = "lin", main = "Madre de Dios, 2019")
+plotRGB(RGB_NIR_2022, r = 1, g = 2, b = 4, stretch = "lin", main = "Madre de Dios, 2022")
+plotRGB(RGB_NIR_2024, r = 1, g = 2, b = 4, stretch = "lin", main = "Madre de Dios, 2024")
+
+#DVI Analysis (Difference Vegetation Index)
+
+dvi_2019 <- RGB_NIR_2019[["B8 (NIR)"]] - RGB_NIR_2019[["B4 (Red)"]]
+dvi_2024 <- RGB_NIR_2024[["B8 (NIR)"]] - RGB_NIR_2024[["B4 (Red)"]]
+
+ddvi <- dvi_2019 - dvi_2024
+
+par(mfrow = c(1, 3))
+
+plot(dvi_2019, main = "DVI 2019", col = inferno(100))
+plot(dvi_2024, main = "DVI 2024", col = inferno(100))
+plot(ddvi, main = "ΔDVI (2019 - 2024)", col = inferno(100))
+
+#Normalized Difference Vegetation Index (NDVI) Analysis
+
+ndvi2019 <- (RGB_NIR_2019[["B8 (NIR)"]] - RGB_NIR_2019[["B4 (Red)"]]) / (RGB_NIR_2019[["B8 (NIR)"]] + RGB_NIR_2019[["B4 (Red)"]])
+ndvi2024 <- (RGB_NIR_2024[["B8 (NIR)"]] - RGB_NIR_2024[["B4 (Red)"]]) / (RGB_NIR_2024[["B8 (NIR)"]] + RGB_NIR_2024[["B4 (Red)"]])
+
+dndvi <- ndvi2019 - ndvi2024
+
+par(mfrow = c(1, 3))
+
+plot(ndvi2019, main = "NDVI 2019", col = magma(100))
+plot(ndvi2024, main = "NDVI 2024", col = magma(100))
+plot(dndvi, main = "ΔNDVI (2019 − 2024)", col = inferno(100))
+
+#NIR and NDVI Differences
+
+nir_diff  <- RGB_NIR_2024[["B8 (NIR)"]] - RGB_NIR_2019[["B8 (NIR)"]]
+ndvi_diff <- ndvi2024 - ndvi2019
+
+par(mfrow = c(1, 2))
+
+plot(nir_diff, col = viridis(100), main = "NIR Difference (2024 − 2019)")
+plot(ndvi_diff, col = viridis(100), main = "NDVI Difference (2024 − 2019)")
+
+#Multitemporal Land Cover Classification (2019–2024)
+
+s2_2019 <- RGB_NIR_2019[[c("B4 (Red)", "B8 (NIR)")]]
+s2_2024 <- RGB_NIR_2024[[c("B4 (Red)", "B8 (NIR)")]]
+
+class_2019 <- im.classify(s2_2019, num_clusters = 4)
+class_2024 <- im.classify(s2_2024, num_clusters = 4)
+
+par(mfrow = c(1, 2))
+plot(class_2019, col = viridis(4), main = "Land Cover Classification 2019")
+plot(class_2024, col = viridis(4), main = "Land Cover Classification 2024")
+
+#Land Cover Proportions
+
+freq_2019 <- freq(class_2019)
+freq_2024 <- freq(class_2024)
+
+perc_2019 <- freq_2019$count * 100 / ncell(class_2019)
+perc_2024 <- freq_2024$count * 100 / ncell(class_2024)
+
+class_names <- c("Water", "Bare soil", "Moderate vegetation", "Healthy vegetation")
+
+tab_lc <- data.frame(
+  Class = class_names,
+  Perc_2019 = perc_2019,
+  Perc_2024 = perc_2024
+)
+
+tab_lc
+
+#Visualization of Changes
+
+p2019 <- ggplot(tab_lc, aes(x = Class, y = Perc_2019, fill = Class)) +
+  geom_bar(stat = "identity") +
+  ylim(0, 100) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(title = "Land Cover Distribution – 2019", y = "Percentage (%)")
+
+p2024 <- ggplot(tab_lc, aes(x = Class, y = Perc_2024, fill = Class)) +
+  geom_bar(stat = "identity") +
+  ylim(0, 100) +
+  scale_fill_viridis_d() +
+  theme_minimal() +
+  labs(title = "Land Cover Distribution – 2024", y = "Percentage (%)")
+
+grid.arrange(p2019, p2024, ncol = 2)
 
 
 
