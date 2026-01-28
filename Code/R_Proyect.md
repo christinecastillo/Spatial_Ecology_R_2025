@@ -225,13 +225,14 @@ By substituting the Blue band with NIR in the RGB composite, vegetation areas be
 Arrange plots side by side
 
 ```
-par(mfrow = c(1, 2))
+par(mfrow = c(1, 3))
 ```
 
 Plot RGB with NIR replacing the Blue band for 2019 and 2024
 
 ```
 plotRGB(RGB_NIR_2019, r = 1, g = 2, b = 4, stretch = "lin", main = "Madre de Dios, 2019")
+plotRGB(RGB_NIR_2022, r = 1, g = 2, b = 4, stretch = "lin", main = "Madre de Dios, 2022")
 plotRGB(RGB_NIR_2024, r = 1, g = 2, b = 4, stretch = "lin", main = "Madre de Dios, 2024")
 ```
 
@@ -448,9 +449,8 @@ grid.arrange(p2019, p2024, ncol = 2)
 ### Conclusions
 
 - The analysis shows a clear reduction in healthy vegetation between 2019 and 2024 in several areas of the study region. Both DVI and NDVI maps indicate a decline in vegetation vigor, confirming patterns observed in RGB and NIR visualizations.
-- Using the Near-Infrared band allowed for a clear distinction between vegetation and non-vegetation areas, making it easier to assess vegetation health. Satellite imagery proved to be a reliable and efficient tool for monitoring spatial and temporal changes in vegetation cover.
-- Unsupervised classification revealed shifts in land cover over time, with reductions in healthy vegetation and increases in bare soil and moderate vegetation areas. These results highlight potential impacts of land use, environmental stress, or human activities in the region.
-- Water-covered areas increased, likely due to permanent rivers, lakes, or mining ponds. Bare soil decreased as some areas were replaced by vegetation or water. Moderate vegetation expanded, reflecting regrowth of secondary forests, while dense, healthy vegetation slightly increased but remains limited. 
+- Using the Near-Infrared band allowed for a clear distinction between vegetation and non-vegetation areas, making it easier to assess vegetation health. 
+- Water-covered areas increased, likely due to mining ponds. Bare soil decreased as some areas were replaced by vegetation or water. Moderate vegetation expanded, reflecting regrowth of secondary forests, while dense, healthy vegetation slightly increased but remains limited. 
 
 ### References
 
