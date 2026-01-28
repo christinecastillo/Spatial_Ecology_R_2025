@@ -305,12 +305,11 @@ dndvi <- ndvi2019 - ndvi2024
 ```
 par(mfrow = c(1, 3))
 
-plot(ndvi2019, main = "NDVI 2019", col = magma(100))
-plot(ndvi2024, main = "NDVI 2024", col = magma(100))
+plot(ndvi2019, main = "NDVI 2019", col = inferno(100))
+plot(ndvi2024, main = "NDVI 2024", col = inferno(100))
 plot(dndvi, main = "ΔNDVI (2019 − 2024)", col = inferno(100))
 ```
-
-![Rplot_NDVInew](https://github.com/user-attachments/assets/e74a2337-7451-4a74-a35b-2b1afdfd3ccc)
+![Rplot](https://github.com/user-attachments/assets/9e853a93-0d95-4812-95fc-e1840ee17089)
 
 *Figure 7: Normalized Difference Vegetation Index (NDVI) maps for July 2019 and July 2024, and their difference (ΔNDVI = NDVI(2019) − NDVI(2024)) for the Madre de Dios region, Peru.*​
 
