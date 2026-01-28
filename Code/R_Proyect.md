@@ -302,8 +302,8 @@ $` NDVI = \frac{(NIR - Red)}{(NIR + Red)} `$
 Using the previously computed DVI layers, NDVI was calculated for each year:
 
 ```
-ndvi2019 <- dvi_2019 / (RGB_NIR_2019[[4]] + RGB_NIR_2019[[8]])
-ndvi2024 <- dvi_2024 / (RGB_NIR_2024[[4]] + RGB_NIR_2024[[8]])
+ndvi2019 <- (RGB_NIR_2019[["B8 (NIR)"]] - RGB_NIR_2019[["B4 (Red)"]]) / (RGB_NIR_2019[["B8 (NIR)"]] + RGB_NIR_2019[["B4 (Red)"]])
+ndvi2024 <- (RGB_NIR_2024[["B8 (NIR)"]] - RGB_NIR_2024[["B4 (Red)"]]) / (RGB_NIR_2024[["B8 (NIR)"]] + RGB_NIR_2024[["B4 (Red)"]])
 ```
 
 ## NDVI Difference Between Years (ΔNDVI)
@@ -314,11 +314,7 @@ To evaluate temporal changes in vegetation health, the difference between NDVI v
 dndvi <- ndvi2019 - ndvi2024
 ```
 
-Positive ΔNDVI values indicate areas where vegetation health was higher in 2019 compared to 2024, while negative values suggest stable or improved vegetation conditions over time.
-
 ## Visualization of NDVI and ΔNDVI
-
-The NDVI maps and their difference were visualized side by side to facilitate comparison. The magma and inferno color scales were used to enhance contrast and highlight spatial patterns:
 
 ```
 par(mfrow = c(1, 3))
@@ -328,13 +324,9 @@ plot(ndvi2024, main = "NDVI 2024", col = magma(100))
 plot(dndvi, main = "ΔNDVI (2019 − 2024)", col = inferno(100))
 ```
 
-![Rplot_NDVI](https://github.com/user-attachments/assets/4764584a-7a61-4a57-8c6e-c4317fc7f548)
+![Rplot_NDVInew](https://github.com/user-attachments/assets/e74a2337-7451-4a74-a35b-2b1afdfd3ccc)
 
-
-*Figure 7: Normalized Difference Vegetation Index (NDVI) maps for July 2019 and July 2024, and their difference (ΔNDVI = NDVI(2019) − NDVI(2024)) for the Madre de Dios region, Peru.*
-
-
-Higher NDVI values indicate dense and healthy vegetation, while lower values correspond to sparse or stressed vegetation. The ΔNDVI map highlights spatial variations in vegetation dynamics, revealing areas where vegetation health has declined or remained stable between 2019 and 2024.​
+*Figure 7: Normalized Difference Vegetation Index (NDVI) maps for July 2019 and July 2024, and their difference (ΔNDVI = NDVI(2019) − NDVI(2024)) for the Madre de Dios region, Peru.*​
 
 ### Multitemporal Analysis
 
@@ -353,8 +345,6 @@ ndvi_diff <- ndvi2024 - ndvi2019
 
 ## Visualization of Multitemporal Changes
 
-The spatial distribution of vegetation changes was visualized using side-by-side maps. The viridis color scale was applied to enhance readability and ensure perceptual uniformity:
-
 ```
 par(mfrow = c(1, 2))
 
@@ -362,12 +352,9 @@ plot(nir_diff, col = viridis(100), main = "NIR Difference (2024 − 2019)")
 plot(ndvi_diff, col = viridis(100), main = "NDVI Difference (2024 − 2019)")
 ```
 
-![Rplot_NIR_NDVI](https://github.com/user-attachments/assets/ecca5a1e-d141-4b89-bdce-6bbb3b00bd7c)
+![Rplotnirdifference_new](https://github.com/user-attachments/assets/e90c1e96-f615-4498-a8de-6786c71b686f)
 
 *Figure 8: Multitemporal comparison of Near-Infrared (NIR) reflectance and Normalized Difference Vegetation Index (NDVI) for the Madre de Dios region, Peru, between July 2019 and July 2024.*
-
-- Positive values indicate areas where NIR reflectance or NDVI increased, suggesting stable or improved vegetation conditions.
-- Negative values highlight zones with reduced vegetation vigor, potentially associated with vegetation degradation or land-use change.
 
 ### Multitemporal Land Cover Classification (2019–2024)
 
@@ -398,7 +385,7 @@ plot(class_2019, col = viridis(4), main = "Land Cover Classification 2019")
 plot(class_2024, col = viridis(4), main = "Land Cover Classification 2024")
 ```
 
-![Rplot_LandCover](https://github.com/user-attachments/assets/d9c37978-59cf-4422-a48f-adea5058bbe1)
+![Rplot_newland](https://github.com/user-attachments/assets/19225701-f676-4fa2-a1cb-6023f49ac440)
 
 *Figure 9: Unsupervised land cover classification for the Madre de Dios region, Peru, using Sentinel-2 imagery from July 2019 and July 2024. Four classes were identified (water, bare soil, moderate vegetation, and healthy vegetation) based on Red and Near-Infrared spectral responses.*
 
@@ -428,10 +415,10 @@ tab_lc
 
 | Class               | Perc_2019  | Perc_2024  |
 |--------------------|------------|------------|
-| Water               | 4.814144   | 42.956808  |
-| Bare soil           | 32.879885  | 17.009621  |
-| Moderate vegetation | 18.728355  | 34.252317  |
-| Healthy vegetation  | 43.556371  | 5.760008   |
+| Water               | 32.868449  | 42.956808  |
+| Bare soil           | 43.563945  | 17.009621  |
+| Moderate vegetation | 18.732856  | 34.252317  |
+| Healthy vegetation  | 4.813505   | 5.760008   |
 
 
 ## Visualization of Changes
@@ -454,7 +441,7 @@ p2024 <- ggplot(tab_lc, aes(x = Class, y = Perc_2024, fill = Class)) +
 grid.arrange(p2019, p2024, ncol = 2)
 ```
 
-![Rplot_LandCover_2019_2024](https://github.com/user-attachments/assets/b1ec55f6-3ac6-40f8-b5a8-9a46e8f5cf16)
+![Rplot_LandCovercompar](https://github.com/user-attachments/assets/970f2a82-a987-460a-bf9b-7e6ff5a1fc6b)
 
 *Figure 9: Multitemporal comparison of unsupervised land cover classification for the Madre de Dios region, Peru, using Sentinel-2 imagery from July 2019 and July 2024. Four classes were identified (water, bare soil, moderate vegetation, and healthy vegetation) based on Red and Near-Infrared spectral responses.*
 
@@ -463,6 +450,7 @@ grid.arrange(p2019, p2024, ncol = 2)
 - The analysis shows a clear reduction in healthy vegetation between 2019 and 2024 in several areas of the study region. Both DVI and NDVI maps indicate a decline in vegetation vigor, confirming patterns observed in RGB and NIR visualizations.
 - Using the Near-Infrared band allowed for a clear distinction between vegetation and non-vegetation areas, making it easier to assess vegetation health. Satellite imagery proved to be a reliable and efficient tool for monitoring spatial and temporal changes in vegetation cover.
 - Unsupervised classification revealed shifts in land cover over time, with reductions in healthy vegetation and increases in bare soil and moderate vegetation areas. These results highlight potential impacts of land use, environmental stress, or human activities in the region.
+- Water-covered areas increased, likely due to permanent rivers, lakes, or mining ponds. Bare soil decreased as some areas were replaced by vegetation or water. Moderate vegetation expanded, reflecting regrowth of secondary forests, while dense, healthy vegetation slightly increased but remains limited. 
 
 ### References
 
